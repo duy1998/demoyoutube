@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.youtube.player.YouTubeThumbnailView
+            android:id="@+id/thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="100dp"
+            android:layout_height="70dp"/>
+    <TextView
+            android:id="@+id/title"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="20sp"
+            android:text="TITLE"
+            app:layout_constraintLeft_toRightOf="@id/thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp" />
+    <TextView
+            android:id="@+id/channel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kenh thieu nhi"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintLeft_toRightOf="@id/thumbnail"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
