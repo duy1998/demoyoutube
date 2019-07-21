@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
@@ -13,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.demoyoutubeapi.adapter.SearchAdapter
 import com.example.demoyoutubeapi.data.OAuthToken
 import com.example.demoyoutubeapi.data.SearchResponse
 import io.reactivex.Observer
@@ -22,29 +24,43 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.HttpUrl
+import okhttp3.ResponseBody
 
 
 class MainActivity : AppCompatActivity() {
-    private val compositeDisposable: CompositeDisposable? = null
+    private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    private var adapter:SearchAdapter = SearchAdapter()
+    private var adapter: SearchAdapter =
+        SearchAdapter()
 
     private val service = Retrofit.instance.create(UserServices::class.java)
 
     private val REDIRECT_URI_ROOT : String = "com.example.demoyoutubeapi"
-    private val REDIRECT_URI : String = "com.example.demoyoutubeapi:/oauth2redirect"
-    private val SCOPE = ArrayList<String>()
-    private val CODE : String = "code"
-    private val CLIENT_ID : String = "505059170979-vgj6v7hhjs6ienjqdfnhuhb0aof6uhgl.apps.googleusercontent.com"
 
-    private var accessToken : String? = null
+    private val REDIRECT_URI : String = "com.example.demoyoutubeapi:/oauth2redirect"
+
+    private val CODE : String = "code"
+
+    private val CLIENT_ID : String = "282922755983-svqvtiqoh6d47egbcrq85l3o9kukpnon.apps.googleusercontent.com"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        SCOPE.add("https://www.googleapis.com/auth/youtube")
-        SCOPE.add("https://www.googleapis.com/auth/youtube")
-        loginButton.setOnClickListener {  startIntentToGetOauthAccessToken() }
+
+        loginButton.text = Constant.accessToken
+        loginButton.setOnClickListener {
+            if(loginButton.text == "Login")
+                startIntentToGetOauthAccessToken()
+            else
+                revokeToken()
+        }
+        homeButton.setOnClickListener(object : View.OnClickListener{
+            override fun onClick(p0: View?) {
+                startActivity(Intent(this@MainActivity,HomeActivity::class.java))
+            }
+
+        })
+
 
         val code : String?
         val error : String?
@@ -57,6 +73,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this,error,Toast.LENGTH_SHORT).show()
                 }else{
                     requestToken(code)
+                    Log.d("HomeActivity", code)
                 }
             }
         }
@@ -82,7 +99,7 @@ class MainActivity : AppCompatActivity() {
 
                             override fun onSubscribe(d: Disposable) {
                                 disposable = d
-                                compositeDisposable?.add(disposable)
+                                compositeDisposable.add(disposable)
                             }
 
                             override fun onNext(t: SearchResponse) {
@@ -113,15 +130,19 @@ class MainActivity : AppCompatActivity() {
                 .subscribeOn(Schedulers.io())
                 .observeOn((AndroidSchedulers.mainThread()))
                 .subscribe(object : Observer<OAuthToken> {
+                    lateinit var disposable: Disposable
                     override fun onComplete() {
-
+                        disposable.dispose()
                     }
 
                     override fun onSubscribe(d: Disposable) {
+                        disposable = d
+                        compositeDisposable.add(d)
                     }
 
                     override fun onNext(t: OAuthToken) {
-                        accessToken = t.accessToken
+                        Log.d("oauthToken",t.accessToken)
+                        Constant.accessToken = t.accessToken
                         loginButton.text = t.accessToken
                     }
 
@@ -136,13 +157,41 @@ class MainActivity : AppCompatActivity() {
         val authorizeUrl : HttpUrl = HttpUrl.parse("https://accounts.google.com/o/oauth2/v2/auth")!!
             .newBuilder()
             .addQueryParameter("client_id",CLIENT_ID)
-            .addQueryParameter("scope","https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl" )
+            .addQueryParameter("scope","https://www.googleapis.com/auth/youtube https://www.googleapis.com/auth/youtube.force-ssl https://www.googleapis.com/auth/youtubepartner" )
             .addQueryParameter("redirect_uri",REDIRECT_URI)
             .addQueryParameter("response_type",CODE)
             .build()
         val i = Intent(Intent.ACTION_VIEW)
         i.data = Uri.parse(authorizeUrl.url().toString())
         startActivity(i)
+    }
+
+    private fun revokeToken(){
+        service.revokeToken(Constant.accessToken)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object :Observer<ResponseBody>{
+                lateinit var disposable: Disposable
+                override fun onComplete() {
+                    disposable.dispose()
+                }
+
+                override fun onSubscribe(d: Disposable) {
+                    disposable=d
+                    compositeDisposable.add(d)
+                }
+
+                override fun onNext(t: ResponseBody) {
+                    Log.d("revoke","success")
+                    Constant.accessToken = "Login"
+                    loginButton.text = Constant.accessToken
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.d("revoke","error"+ e.toString())
+                }
+
+            })
     }
 
 }

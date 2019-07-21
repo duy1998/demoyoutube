@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.demoyoutubeapi.adapter.SearchAdapter
 import com.example.demoyoutubeapi.data.InfoResponse
 import com.example.demoyoutubeapi.data.SearchResponse
 import com.google.android.youtube.player.YouTubeBaseActivity

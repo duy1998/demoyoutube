@@ -13,22 +13,42 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:layout_height="wrap_content"
-            android:layout_width="300dp"/>
-    <Button
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/searchEditText"
-            android:id="@+id/loginButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"/>
+    <LinearLayout
+            android:id="@+id/layoutOption"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dang nhap"/>
+            app:layout_constraintTop_toBottomOf="@id/searchEditText"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:orientation="horizontal">
+    <Button
+            app:layout_constraintTop_toBottomOf="@id/searchEditText"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/homeButton"
+            android:id="@+id/loginButton"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="Login"/>
+    <Button
+            app:layout_constraintTop_toBottomOf="@id/searchEditText"
+            app:layout_constraintLeft_toRightOf="@id/loginButton"
+            android:id="@+id/homeButton"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:text="Trang ca nhan"/>
+
+
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listItem"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/searchEditText"
-            android:layout_marginTop="50dp"
+            app:layout_constraintTop_toBottomOf="@id/layoutOption"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="wrap_content"
+    />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
