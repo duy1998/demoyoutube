@@ -24,6 +24,7 @@ class HomeActivity : AppCompatActivity() {
         listItem.adapter = adapter
         service.getPlaylists(" Bearer "+Constant.accessToken,
             "application/json",
+            25,
             true,
             "snippet",
             Constant.API_KEY)

@@ -33,7 +33,7 @@ class PlaylistActivity : AppCompatActivity() {
         Log.d("PlaylistActivity",Constant.accessToken)
         Log.d("PlaylistActivity",id)
         Log.d("PlaylistActivity",Constant.API_KEY)
-        service.getPlaylistItemById("Bearer "+Constant.accessToken,"snippet",id!!,Constant.API_KEY)
+        service.getPlaylistItemById("Bearer "+Constant.accessToken,"snippet",25,id!!,Constant.API_KEY)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<PlaylistItemResponse> {

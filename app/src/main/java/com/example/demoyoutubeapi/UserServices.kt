@@ -49,6 +49,7 @@ interface UserServices {
     fun getPlaylists(
         @Header("Authorization") authHeader:String,
         @Header("Accept") accept:String,
+        @Query("maxResults") max: Int,
         @Query("mine") mine: Boolean,
         @Query("part") part: String,
         @Query("key") apiKey: String
@@ -76,6 +77,7 @@ interface UserServices {
     @GET("youtube/v3/playlistItems")
     fun getPlaylistItemById(@Header("Authorization") authHeader:String,
                             @Query("part") part: String,
+                            @Query("maxResults") max:Int,
                             @Query("playlistId") playlistId: String,
                             @Query("key") key :String
     ) : Observable<PlaylistItemResponse>
