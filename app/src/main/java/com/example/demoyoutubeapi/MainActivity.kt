@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         loginButton.text = Constant.accessToken
         loginButton.setOnClickListener {
-            if(loginButton.text == "Login")
+            if(loginButton.text == "Authorize")
                 startIntentToGetOauthAccessToken()
             else
                 revokeToken()
@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onNext(t: ResponseBody) {
                     Log.d("revoke","success")
-                    Constant.accessToken = "Login"
+                    Constant.accessToken = "Authorize"
                     loginButton.text = Constant.accessToken
                 }
 
