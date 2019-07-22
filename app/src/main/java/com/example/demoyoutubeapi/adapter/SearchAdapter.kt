@@ -137,6 +137,35 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                                 builder.setTitle("Choose an item")
                                 builder.setSingleChoiceItems(array,-1,object:DialogInterface.OnClickListener{
                                     override fun onClick(p0: DialogInterface?, p1: Int) {
+                                        val itemAdd = PlaylistItem(
+                                            PlaylistItem.Snippet(
+                                                t.items[p1].id,
+                                                PlaylistItem.ResourceId("youtube#video", item.id.channelId)
+                                            )
+                                        )
+                                        service.insertPlaylistItems(
+                                            "snippet",
+                                            Constant.API_KEY,
+                                            Constant.accessToken,
+                                            itemAdd
+                                        ).subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(object : Observer<ResponseBody> {
+                                                override fun onComplete() {
+
+                                                }
+
+                                                override fun onSubscribe(d: Disposable) {
+                                                }
+
+                                                override fun onNext(t: ResponseBody) {
+                                                    Log.d("add", "Successful")
+                                                }
+
+                                                override fun onError(e: Throwable) {
+                                                    Log.d("add", "error")
+                                                }
+                                            })
                                         p0?.dismiss()
                                     }
 
@@ -157,35 +186,7 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
                         })
 
-                    val itemAdd = PlaylistItem(
-                        PlaylistItem.Snippet(
-                            "PL3Tti26r-CYEOkIjztBJwXDr3wOKPIyIf",
-                            PlaylistItem.ResourceId("youtube#video", item.id.channelId)
-                        )
-                    )
-                    service.insertPlaylistItems(
-                        "snippet",
-                        Constant.API_KEY,
-                        Constant.accessToken,
-                        itemAdd
-                    ).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Observer<ResponseBody> {
-                            override fun onComplete() {
 
-                            }
-
-                            override fun onSubscribe(d: Disposable) {
-                            }
-
-                            override fun onNext(t: ResponseBody) {
-                                Log.d("add", "Successful")
-                            }
-
-                            override fun onError(e: Throwable) {
-                                Log.d("add", "error")
-                            }
-                        })
                 }
 
             })

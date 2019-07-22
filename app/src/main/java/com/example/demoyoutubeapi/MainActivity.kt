@@ -54,12 +54,7 @@ class MainActivity : AppCompatActivity() {
             else
                 revokeToken()
         }
-        homeButton.setOnClickListener(object : View.OnClickListener{
-            override fun onClick(p0: View?) {
-                startActivity(Intent(this@MainActivity,HomeActivity::class.java))
-            }
-
-        })
+        homeButton.setOnClickListener { startActivity(Intent(this@MainActivity,HomeActivity::class.java)) }
 
 
         val code : String?
@@ -88,28 +83,56 @@ class MainActivity : AppCompatActivity() {
         searchEditText.setOnEditorActionListener(object : TextView.OnEditorActionListener{
             override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
                 if (p1 == EditorInfo.IME_ACTION_SEARCH) {
-                    service.searchByKeyWord(Constant.API_KEY, "snippet", searchEditText.text.toString(), 10, "video")
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Observer<SearchResponse> {
-                            lateinit var disposable: Disposable
-                            override fun onComplete() {
-                                disposable.dispose()
-                            }
+                    if(typeEditText.text.isNotEmpty()){
+                        service.searchByKeyWord(Constant.API_KEY, "snippet", searchEditText.text.toString(), 10, "video", typeEditText.text.toString()
+                        )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(object : Observer<SearchResponse> {
+                                lateinit var disposable: Disposable
+                                override fun onComplete() {
+                                    disposable.dispose()
+                                }
 
-                            override fun onSubscribe(d: Disposable) {
-                                disposable = d
-                                compositeDisposable.add(disposable)
-                            }
+                                override fun onSubscribe(d: Disposable) {
+                                    disposable = d
+                                    compositeDisposable.add(disposable)
+                                }
 
-                            override fun onNext(t: SearchResponse) {
-                                adapter.setData(t.items)
-                            }
+                                override fun onNext(t: SearchResponse) {
+                                    adapter.setData(t.items)
+                                }
 
-                            override fun onError(e: Throwable) {
-                                Log.d("TAG", e.toString())
-                            }
-                        })
+                                override fun onError(e: Throwable) {
+                                    Log.d("TAG", e.toString())
+                                }
+                            })
+                    } else{
+                        service.searchByKeyWord(Constant.API_KEY, "snippet", searchEditText.text.toString(), 10, "video"
+                        )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(object : Observer<SearchResponse> {
+                                lateinit var disposable: Disposable
+                                override fun onComplete() {
+                                    disposable.dispose()
+                                }
+
+                                override fun onSubscribe(d: Disposable) {
+                                    disposable = d
+                                    compositeDisposable.add(disposable)
+                                }
+
+                                override fun onNext(t: SearchResponse) {
+                                    adapter.setData(t.items)
+                                }
+
+                                override fun onError(e: Throwable) {
+                                    Log.d("TAG", e.toString())
+                                }
+                            })
+                    }
+
                     return true
                 }
                 return false

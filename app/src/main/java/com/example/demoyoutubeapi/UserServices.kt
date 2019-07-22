@@ -5,12 +5,23 @@ import com.example.demoyoutubeapi.data.OAuthToken
 import com.example.demoyoutubeapi.data.SearchResponse
 import com.example.demoyoutubeapi.playlist.PlaylistItem
 import com.example.demoyoutubeapi.playlist.PlaylistResponse
+import com.example.demoyoutubeapi.playlist.SnippetPlaylist
 import com.example.demoyoutubeapi.playlistitem.PlaylistItemResponse
+import com.google.api.services.youtube.model.VideoCategory
 import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.http.*
 
 interface UserServices {
+    @GET("youtube/v3/search")
+    fun searchByKeyWord(
+        @Query("key") apiKey: String,
+        @Query("part") part: String,
+        @Query("q") order: String,
+        @Query("maxResults") maxResults: Int,
+        @Query("type") type:String,
+        @Query("videoCategoryId") videoCategoryId:String
+    ): Observable<SearchResponse>
     @GET("youtube/v3/search")
     fun searchByKeyWord(
         @Query("key") apiKey: String,
@@ -55,6 +66,13 @@ interface UserServices {
         @Query("key") apiKey: String
 
     ):Observable<PlaylistResponse>
+    @POST("youtube/v3/playlists")
+    fun insertPlaylist(
+        @Header("Authorization") authHeader:String,
+        @Query("part") part: String,
+        @Query("key") key: String,
+        @Body item: SnippetPlaylist
+    ):Observable<retrofit2.Response<Void>>
 
     @POST("youtube/v3/playlistItems")
     fun insertPlaylistItems(@Query("part") part: String,

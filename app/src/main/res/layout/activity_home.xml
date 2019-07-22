@@ -3,11 +3,20 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".HomeActivity">
-    <androidx.recyclerview.widget.RecyclerView android:layout_width="match_parent"
-                                               android:layout_height="match_parent"
-                                               android:id="@+id/listItem">
+    <Button
+            android:id="@+id/addButton"
+            android:text="Add Playlist"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintTop_toBottomOf="@id/addButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listItem">
 
     </androidx.recyclerview.widget.RecyclerView>
 

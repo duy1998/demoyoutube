@@ -5,20 +5,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".MainActivity">
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/searchLayout"
+                  android:orientation="horizontal"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintLeft_toLeftOf="parent">
+        <EditText
+                android:hint="keyword"
+                android:id="@+id/searchEditText"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"/>
+        <EditText
+                android:hint="type"
+                android:id="@+id/typeEditText"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
 
-    <EditText
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/searchEditText"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"/>
+
     <LinearLayout
             android:id="@+id/layoutOption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/searchEditText"
+            app:layout_constraintTop_toBottomOf="@id/searchLayout"
             app:layout_constraintLeft_toLeftOf="parent"
             android:orientation="horizontal">
     <Button
