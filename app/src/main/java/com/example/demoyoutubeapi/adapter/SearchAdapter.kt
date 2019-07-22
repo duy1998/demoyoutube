@@ -1,5 +1,7 @@
 package com.example.demoyoutubeapi.adapter
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.demoyoutubeapi.*
 import com.example.demoyoutubeapi.data.SearchItem
 import com.example.demoyoutubeapi.playlist.PlaylistItem
+import com.example.demoyoutubeapi.playlist.PlaylistResponse
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubeThumbnailLoader
 import com.google.android.youtube.player.YouTubeThumbnailView
@@ -107,6 +110,53 @@ class SearchAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
             addButton.setOnClickListener(object : View.OnClickListener{
                 override fun onClick(p0: View?) {
+                    service.getPlaylists(" Bearer "+Constant.accessToken,
+                        "application/json",
+                        25,
+                        true,
+                        "snippet",
+                        Constant.API_KEY)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(object : Observer<PlaylistResponse>{
+                            lateinit var disposable: Disposable
+                            override fun onSubscribe(d: Disposable) {
+                                disposable=d
+                                Log.d("HomeActivity", Constant.accessToken)
+                            }
+
+                            override fun onNext(t: PlaylistResponse) {
+                                var listChoice = ArrayList<String>()
+                                for (i in t.items){
+                                    listChoice.add(i.snippet.title)
+                                }
+                                val array = arrayOfNulls<String>(listChoice.size)
+                                listChoice.toArray(array)
+
+                                var builder = AlertDialog.Builder(itemView.context)
+                                builder.setTitle("Choose an item")
+                                builder.setSingleChoiceItems(array,-1,object:DialogInterface.OnClickListener{
+                                    override fun onClick(p0: DialogInterface?, p1: Int) {
+                                        p0?.dismiss()
+                                    }
+
+                                })
+                                val alertDialog = builder.create()
+                                alertDialog.show()
+                                Log.d("HomeActivity", "Thanh Cong")
+
+                            }
+
+                            override fun onError(e: Throwable) {
+                                Log.d("HomeActivity", e.toString())
+                            }
+
+                            override fun onComplete() {
+                                disposable.dispose()
+                            }
+
+                        })
+
                     val itemAdd = PlaylistItem(
                         PlaylistItem.Snippet(
                             "PL3Tti26r-CYEOkIjztBJwXDr3wOKPIyIf",
